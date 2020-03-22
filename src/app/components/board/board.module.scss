@@ -1,0 +1,28 @@
+.robotGrid {
+    display: flex;
+    justify-content: center;
+
+    .flexGrid {
+        display: flex;
+        border: 1px solid;
+        flex-direction: column;
+    }
+
+    .flexGridRow {
+        display: flex;
+
+        .flexGridCol {
+            width: 20%;
+
+            .flexGridTile {
+                background-color: #096dd9;
+                border: 1px solid;
+                height: 50px;
+                min-width: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}
