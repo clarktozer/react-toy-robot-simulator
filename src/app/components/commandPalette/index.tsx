@@ -3,7 +3,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { robotActions } from "../../actions";
 import { TableDimensions } from "../../constants";
-import { Rotation } from "../../enums";
+import { Facing, Rotation } from "../../enums";
+import { ICoordinate } from "../../models";
 import { selectors } from "../../selectors";
 import styles from "./commandPalette.module.scss";
 import { Move } from "./commands/move";
@@ -16,7 +17,7 @@ export const CommandPalette: React.FC = () => {
     const isPlaced = useSelector(selectors.getIsPlaced);
     const isMoveable = useSelector(selectors.getIsMoveable);
     const coordinates = useSelector(selectors.getCoordinates);
-    const facing = useSelector(selectors.getFacing);
+    const currentFacing = useSelector(selectors.getFacing);
 
     const onMove = () => dispatch(robotActions.move());
 
@@ -24,17 +25,14 @@ export const CommandPalette: React.FC = () => {
 
     const onGenerate = () => {
         notification.info({
-            message: `X: ${coordinates.x}, Y: ${coordinates.y}, Facing: ${facing}`
+            message: `X: ${coordinates.x}, Y: ${coordinates.y}, Facing: ${currentFacing}`
         });
     };
 
-    const onPlace = (x: number, y: number) =>
+    const onPlace = (coordinates: ICoordinate, facing: Facing) =>
         dispatch(
             robotActions.place({
-                coordinates: {
-                    x,
-                    y
-                },
+                coordinates,
                 facing
             })
         );

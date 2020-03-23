@@ -8,8 +8,7 @@ import { store } from "./store";
 
 export const App: React.FC = () => {
     notification.config({
-        placement: "topLeft",
-        duration: 3
+        placement: "topLeft"
     });
 
     return (

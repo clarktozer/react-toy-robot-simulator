@@ -1,6 +1,9 @@
+import { Facing } from "../../../../enums";
+import { ICoordinate } from "../../../../models";
+
 export interface IPlace {
     disabled?: boolean;
-    onPlace: (x: number, y: number) => void;
+    onPlace: (coordinates: ICoordinate, facing: Facing) => void;
     xMax: number;
     yMax: number;
 }

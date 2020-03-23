@@ -2,7 +2,9 @@ import { produce } from "immer";
 import { getType } from "typesafe-actions";
 import { robotActions } from "../actions";
 import { RobotAction } from "../actions/models";
-import { Facing } from "../enums";
+import { CalculateMove, RotateLeft, RotateRight } from "../constants";
+import { Facing, Rotation } from "../enums";
+import { Board } from "../services/board";
 import { IRobotState } from "./models";
 
 const initialState: IRobotState = {
@@ -12,7 +14,7 @@ const initialState: IRobotState = {
         y: 0
     },
     isPlaced: false,
-    isMoveable: false // check if will go off the table when moved
+    isMoveable: false
 };
 
 export const robotReducer = (state: IRobotState = initialState, action: RobotAction) =>
@@ -20,18 +22,33 @@ export const robotReducer = (state: IRobotState = initialState, action: RobotAct
         switch (action.type) {
             case getType(robotActions.place): {
                 const { coordinates, facing } = action.payload;
-
-                draft.isPlaced = true;
-                draft.coordinates = coordinates;
-                draft.facing = facing;
+                if (Board.isValidCoordinates(coordinates.x, coordinates.y)) {
+                    const { x, y } = CalculateMove[facing];
+                    draft.coordinates = coordinates;
+                    draft.facing = facing;
+                    draft.isMoveable = Board.isValidCoordinates(coordinates.x + x, coordinates.y + y);
+                    draft.isPlaced = true;
+                }
                 break;
             }
             case getType(robotActions.move): {
+                if (draft.isPlaced && draft.isMoveable) {
+                    const { x, y } = CalculateMove[draft.facing];
+                    const newX = draft.coordinates.x + x;
+                    const newY = draft.coordinates.y + y;
+                    draft.coordinates.x = newX;
+                    draft.coordinates.y = newY;
+                    draft.isMoveable = Board.isValidCoordinates(newX + x, newY + y);
+                }
                 break;
             }
-
             case getType(robotActions.rotate): {
-                //check if cant move, set draft.isMovable = false if not;
+                if (draft.isPlaced) {
+                    const newFacing = action.payload === Rotation.Left ? RotateLeft[draft.facing] : RotateRight[draft.facing];
+                    draft.facing = newFacing;
+                    const { x, y } = CalculateMove[newFacing];
+                    draft.isMoveable = Board.isValidCoordinates(draft.coordinates.x + x, draft.coordinates.y + y);
+                }
                 break;
             }
         }

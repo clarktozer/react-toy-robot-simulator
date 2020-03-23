@@ -9,15 +9,15 @@ const { Option } = Select;
 export const Place: React.FC<IPlace> = ({ disabled, onPlace, xMax, yMax }) => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
-    const [orientation, setOrientation] = useState(Facing.North);
+    const [facing, setFacing] = useState(Facing.North);
 
-    const onOrientationChange = (value: Facing) => setOrientation(value);
+    const onFacingChange = (value: Facing) => setFacing(value);
 
     const onXChange = (value: number | undefined) => setX(value ? value : 0);
 
     const onYChange = (value: number | undefined) => setY(value ? value : 0);
 
-    const onPlaceRobot = () => onPlace(x, y);
+    const onPlaceRobot = () => onPlace({ x, y }, facing);
 
     return (
         <div className={styles.command}>
@@ -36,7 +36,7 @@ export const Place: React.FC<IPlace> = ({ disabled, onPlace, xMax, yMax }) => {
                 </div>
                 <div className={styles.commandControl}>
                     <label>Facing:</label>
-                    <Select className={styles.orientation} value={orientation} defaultValue={Facing.North} onChange={onOrientationChange}>
+                    <Select className={styles.facing} value={facing} defaultValue={Facing.North} onChange={onFacingChange}>
                         {Object.keys(Facing).map(key => (
                             <Option key={key} value={Facing[key as keyof typeof Facing]}>
                                 {key}
